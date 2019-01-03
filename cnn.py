@@ -17,24 +17,37 @@ from keras.preprocessing.image import ImageDataGenerator
 
 y_train = pd.read_csv('train_data.csv')
 y_test = pd.read_csv('test_data.csv')
+
+for i in range(y_train.shape[0]):
+    y_train.iloc[i,0]=str(y_train.iloc[i,0])+'.png'
+for i in range(y_test.shape[0]):
+    y_test.iloc[i,0]=str(y_test.iloc[i,0])+'.png'
+y_train = y_train.sort_values('img_name')
+y_test = y_test.sort_values('img_name')
+y_train = y_train.reset_index(drop=True)
+y_test = y_test.reset_index(drop=True)
+
 bbox_train = y_train.iloc[:, 2:6].values
 bbox_test = y_test.iloc[:, 2:6].values
 label_train = y_train.iloc[:, 1].values
 label_test = y_test.iloc[:, 1].values
 
+i=0
 for img in os.listdir('train/none/'):
     imgr = mpimg.imread(os.path.join('train/none/', img))
-    bbox_train[int(img.replace('.png', ''))-1][0]=bbox_train[int(img.replace('.png', ''))-1][0]*(64/imgr.shape[0])
-    bbox_train[int(img.replace('.png', ''))-1][1]=bbox_train[int(img.replace('.png', ''))-1][1]*(64/imgr.shape[1])
-    bbox_train[int(img.replace('.png', ''))-1][2]=min(64,bbox_train[int(img.replace('.png', ''))-1][2]*(64/imgr.shape[0]))
-    bbox_train[int(img.replace('.png', ''))-1][3]=min(64,bbox_train[int(img.replace('.png', ''))-1][3]*(64/imgr.shape[1]))
-
+    bbox_train[i][0]=bbox_train[i][0]*(64/imgr.shape[0])
+    bbox_train[i][1]=bbox_train[i][1]*(64/imgr.shape[1])
+    bbox_train[i][2]=min(64,bbox_train[i][2]*(64/imgr.shape[0]))
+    bbox_train[i][3]=min(64,bbox_train[i][3]*(64/imgr.shape[1]))
+    i+=1
+i=0
 for img in os.listdir('test/none/'):
     imgr = mpimg.imread(os.path.join('test/none/', img))
-    bbox_test[int(img.replace('.png', ''))-1][0]=bbox_test[int(img.replace('.png', ''))-1][0]*(64/imgr.shape[0])
-    bbox_test[int(img.replace('.png', ''))-1][1]=bbox_test[int(img.replace('.png', ''))-1][1]*(64/imgr.shape[1])
-    bbox_test[int(img.replace('.png', ''))-1][2]=min(64,bbox_test[int(img.replace('.png', ''))-1][2]*(64/imgr.shape[0]))
-    bbox_test[int(img.replace('.png', ''))-1][3]=min(64,bbox_test[int(img.replace('.png', ''))-1][3]*(64/imgr.shape[1]))
+    bbox_test[i][0]=bbox_test[i][0]*(64/imgr.shape[0])
+    bbox_test[i][1]=bbox_test[i][1]*(64/imgr.shape[1])
+    bbox_test[i][2]=min(64,bbox_test[i][2]*(64/imgr.shape[0]))
+    bbox_test[i][3]=min(64,bbox_test[i][3]*(64/imgr.shape[1]))
+    i+=1
 
 def bbox_gen(bbox):
     while True:
@@ -76,92 +89,79 @@ def labels_gen(labels, k):
             n = np.squeeze(n)
             yield n
 
-train_datagen_d = ImageDataGenerator(rescale = 1./255)
-test_datagen_d = ImageDataGenerator(rescale = 1./255)
-train_datagen_c_1 = ImageDataGenerator(rescale = 1./255)
-test_datagen_c_1 = ImageDataGenerator(rescale = 1./255)
-train_datagen_c_2 = ImageDataGenerator(rescale = 1./255)
-test_datagen_c_2 = ImageDataGenerator(rescale = 1./255)
-train_datagen_c_3 = ImageDataGenerator(rescale = 1./255)
-test_datagen_c_3 = ImageDataGenerator(rescale = 1./255)
-train_datagen_c_4 = ImageDataGenerator(rescale = 1./255)
-test_datagen_c_4 = ImageDataGenerator(rescale = 1./255)
-train_datagen_c_5 = ImageDataGenerator(rescale = 1./255)
-test_datagen_c_5 = ImageDataGenerator(rescale = 1./255)
-train_datagen_c_6 = ImageDataGenerator(rescale = 1./255)
-test_datagen_c_6 = ImageDataGenerator(rescale = 1./255)
+datagen = ImageDataGenerator(rescale = 1./255)
 
-training_set_d = train_datagen_d.flow_from_directory('train/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_d = test_datagen_d.flow_from_directory('test/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
+training_set_d = datagen.flow_from_directory('train/',
+                                             target_size = (64, 64),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_d = datagen.flow_from_directory('test/',
+                                         target_size = (64, 64),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
 
-training_set_c_1 = train_datagen_c_1.flow_from_directory('train_cr/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_c_1 = test_datagen_c_1.flow_from_directory('test_cr/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
-training_set_c_2 = train_datagen_c_2.flow_from_directory('train_cr/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_c_2 = test_datagen_c_2.flow_from_directory('test_cr/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
-training_set_c_3 = train_datagen_c_3.flow_from_directory('train_cr/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_c_3 = test_datagen_c_3.flow_from_directory('test_cr/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
-training_set_c_4 = train_datagen_c_4.flow_from_directory('train_cr/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_c_4 = test_datagen_c_4.flow_from_directory('test_cr/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
-training_set_c_5 = train_datagen_c_5.flow_from_directory('train_cr/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_c_5 = test_datagen_c_5.flow_from_directory('test_cr/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
-training_set_c_6 = train_datagen_c_6.flow_from_directory('train_cr/',
-                                                 target_size = (64, 64),
-                                                 batch_size = 32,
-                                                 shuffle = False,
-                                                 class_mode = None)
-test_set_c_6 = test_datagen_c_6.flow_from_directory('test_cr/',
-                                            target_size = (64, 64),
-                                            batch_size = 32,
-                                            shuffle = False,
-                                            class_mode = None)
+training_set_c_1 = datagen.flow_from_directory('train_cr/',
+                                             target_size = (32, 32),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_c_1 = datagen.flow_from_directory('test_cr/',
+                                         target_size = (32, 32),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
+training_set_c_2 = datagen.flow_from_directory('train_cr/',
+                                             target_size = (32, 32),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_c_2 = datagen.flow_from_directory('test_cr/',
+                                         target_size = (32, 32),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
+training_set_c_3 = datagen.flow_from_directory('train_cr/',
+                                             target_size = (32, 32),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_c_3 = datagen.flow_from_directory('test_cr/',
+                                         target_size = (32, 32),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
+training_set_c_4 = datagen.flow_from_directory('train_cr/',
+                                             target_size = (32, 32),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_c_4 = datagen.flow_from_directory('test_cr/',
+                                         target_size = (32, 32),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
+training_set_c_5 = datagen.flow_from_directory('train_cr/',
+                                             target_size = (32, 32),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_c_5 = datagen.flow_from_directory('test_cr/',
+                                         target_size = (32, 32),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
+training_set_c_6 = datagen.flow_from_directory('train_cr/',
+                                             target_size = (32, 32),
+                                             batch_size = 32,
+                                             shuffle = False,
+                                             class_mode = None)
+test_set_c_6 = datagen.flow_from_directory('test_cr/',
+                                         target_size = (32, 32),
+                                         batch_size = 32,
+                                         shuffle = False,
+                                         class_mode = None)
 
 bbox_train_g=bbox_gen(bbox_train)
 bbox_test_g=bbox_gen(bbox_test)
@@ -206,9 +206,17 @@ test_set_c_6 = zip(test_set_c_6, label_test_6)
 
 detector = Sequential()
 detector.add(Conv2D(32, (3, 3), input_shape = (64, 64, 3), activation='relu'))
-detector.add(Dropout(0.2))
-detector.add(MaxPooling2D(pool_size = (2, 2)))
+detector.add(BatchNormalization())
+detector.add(Dropout(0.1))
 detector.add(Conv2D(32, (3, 3), activation='relu'))
+detector.add(BatchNormalization())
+detector.add(Dropout(0.1))
+detector.add(MaxPooling2D(pool_size = (2, 2)))
+detector.add(Conv2D(64, (3, 3), activation='relu'))
+detector.add(BatchNormalization())
+detector.add(Dropout(0.2))
+detector.add(Conv2D(64, (3, 3), activation='relu'))
+detector.add(BatchNormalization())
 detector.add(Dropout(0.2))
 detector.add(MaxPooling2D(pool_size = (2, 2)))
 detector.add(Flatten())
@@ -216,6 +224,7 @@ detector.add(Dense(units = 1024, activation='relu'))
 detector.add(BatchNormalization())
 detector.add(Dropout(0.2))
 detector.add(Dense(units = 512, activation='relu'))
+detector.add(BatchNormalization())
 detector.add(Dropout(0.2))
 detector.add(Dense(units = 4))
 
@@ -234,22 +243,25 @@ detector.fit_generator(generator=training_set_d,
 # Initialising the CNN for CLASSIFICATION
 
 classifier = Sequential()
-classifier.add(Conv2D(48, (3, 3), input_shape = (64, 64, 3), activation='relu'))
-classifier.add(Dropout(0.2))
-classifier.add(MaxPooling2D(pool_size = (2, 2)))
-classifier.add(Conv2D(48, (3, 3), activation='relu'))
-classifier.add(Dropout(0.2))
-classifier.add(MaxPooling2D(pool_size = (2, 2)))
-classifier.add(Conv2D(64, (3, 3), activation='relu'))
-classifier.add(Dropout(0.2))
+classifier.add(Conv2D(16, (3, 3), input_shape = (32, 32, 3), activation='relu'))
+classifier.add(BatchNormalization())
+classifier.add(Conv2D(32, (3, 3), activation='relu'))
+classifier.add(BatchNormalization())
+classifier.add(Dropout(0.1))
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
 classifier.add(Conv2D(64, (3, 3), activation='relu'))
+classifier.add(BatchNormalization())
+classifier.add(Dropout(0.2))
+classifier.add(Conv2D(64, (3, 3), activation='relu'))
+classifier.add(BatchNormalization())
 classifier.add(Dropout(0.2))
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
 classifier.add(Flatten())
 classifier.add(Dense(units = 512, activation='relu'))
+classifier.add(BatchNormalization())
 classifier.add(Dropout(0.2))
 classifier.add(Dense(units = 512, activation='relu'))
+classifier.add(BatchNormalization())
 classifier.add(Dropout(0.2))
 classifier.add(Dense(units = 11, activation = 'softmax'))
 
@@ -262,44 +274,44 @@ classifier_6=classifier
 
 # Compiling the CNN
 
-classifier_1.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
-classifier_2.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
-classifier_3.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
-classifier_4.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
-classifier_5.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
-classifier_6.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['accuracy'])
+classifier_1.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
+classifier_2.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
+classifier_3.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
+classifier_4.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
+classifier_5.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
+classifier_6.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metrics=['categorical_accuracy'])
 
 # Fitting the CNN to the images
 
 classifier_1.fit_generator(generator=training_set_c_1,
-                       steps_per_epoch=33402/32,
-                       epochs=25,
-                       validation_data=test_set_c_1,
-                       validation_steps=13068/32)
+                           steps_per_epoch=33402/32,
+                           epochs=25,
+                           validation_data=test_set_c_1,
+                           validation_steps=13068/32)
 classifier_2.fit_generator(generator=training_set_c_2,
-                       steps_per_epoch=33402/32,
-                       epochs=25,
-                       validation_data=test_set_c_2,
-                       validation_steps=13068/32)
+                           steps_per_epoch=33402/32,
+                           epochs=25,
+                           validation_data=test_set_c_2,
+                           validation_steps=13068/32)
 classifier_3.fit_generator(generator=training_set_c_3,
-                       steps_per_epoch=33402/32,
-                       epochs=25,
-                       validation_data=test_set_c_3,
-                       validation_steps=13068/32)
+                           steps_per_epoch=33402/32,
+                           epochs=25,
+                           validation_data=test_set_c_3,
+                           validation_steps=13068/32)
 classifier_4.fit_generator(generator=training_set_c_4,
-                       steps_per_epoch=33402/32,
-                       epochs=25,
-                       validation_data=test_set_c_4,
-                       validation_steps=13068/32)
+                           steps_per_epoch=33402/32,
+                           epochs=25,
+                           validation_data=test_set_c_4,
+                           validation_steps=13068/32)
 classifier_5.fit_generator(generator=training_set_c_5,
-                       steps_per_epoch=33402/32,
-                       epochs=25,
-                       validation_data=test_set_c_5,
-                       validation_steps=13068/32)
+                           steps_per_epoch=33402/32,
+                           epochs=25,
+                           validation_data=test_set_c_5,
+                           validation_steps=13068/32)
 classifier_6.fit_generator(generator=training_set_c_6,
-                       steps_per_epoch=33402/32,
-                       epochs=25,
-                       validation_data=test_set_c_6,
-                       validation_steps=13068/32)
+                           steps_per_epoch=33402/32,
+                           epochs=25,
+                           validation_data=test_set_c_6,
+                           validation_steps=13068/32)
 
 # PART - 4 : Testing
