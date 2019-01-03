@@ -12,9 +12,6 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import BatchNormalization
 from keras.preprocessing.image import ImageDataGenerator
-from tensorflow.image import crop_to_bounding_box
-from tensorflow.image import resize_area
-import tensorflow as tf
 
 # PART - 2 : Data Pre-processing
 
@@ -43,7 +40,7 @@ def bbox_gen(bbox):
     while True:
         for i in range(0,bbox.shape[0],32):
             n = []
-            n=np.resize(n, (0, 4))
+            n = np.resize(n, (0, 4))
             for j in range(i, i+32):
                 if (j<bbox.shape[0]):
                     n=np.append(n, bbox[j:j+1, :], axis=0)
@@ -72,56 +69,98 @@ def labels_gen(labels, k):
     while True:
         for i in range(0, labels.shape[0], 32):
             n = []
+            n = np.resize(n, (0,1,11))
             for j in range(i, i+32):
                 if (j<labels.shape[0]):
-                    n.append(labels[j, k-1, :])
-            n=np.array(n)
+                    n=np.append(n, labels[j:j+1, k-1:k, :], axis=0)
+            n = np.squeeze(n)
             yield n
 
-def crop_tr(batch):
-    i=-1
-    sess=tf.Session()
-    while (1):
-        X,y=next(batch)
-        for t in range(X.shape[0]):
-            i+=1
-            i%=33402
-            img = X[t:t+1,:,:,:]
-            img = crop_to_bounding_box(img, bbox_train[i,0], bbox_train[i,1], bbox_train[i,2]-bbox_train[i,0], bbox_train[i,3]-bbox_train[i,1])
-            img = resize_area(img, (64,64))
-            img = sess.run(img)
-            X[t,:,:,:]=img
-        yield X,y
-    sess.close()
+train_datagen_d = ImageDataGenerator(rescale = 1./255)
+test_datagen_d = ImageDataGenerator(rescale = 1./255)
+train_datagen_c_1 = ImageDataGenerator(rescale = 1./255)
+test_datagen_c_1 = ImageDataGenerator(rescale = 1./255)
+train_datagen_c_2 = ImageDataGenerator(rescale = 1./255)
+test_datagen_c_2 = ImageDataGenerator(rescale = 1./255)
+train_datagen_c_3 = ImageDataGenerator(rescale = 1./255)
+test_datagen_c_3 = ImageDataGenerator(rescale = 1./255)
+train_datagen_c_4 = ImageDataGenerator(rescale = 1./255)
+test_datagen_c_4 = ImageDataGenerator(rescale = 1./255)
+train_datagen_c_5 = ImageDataGenerator(rescale = 1./255)
+test_datagen_c_5 = ImageDataGenerator(rescale = 1./255)
+train_datagen_c_6 = ImageDataGenerator(rescale = 1./255)
+test_datagen_c_6 = ImageDataGenerator(rescale = 1./255)
 
-def crop_te(batch):
-    i=-1
-    sess=tf.Session()
-    while (1):
-        X,y=next(batch)
-        for t in range(X.shape[0]):
-            i+=1
-            i%=13068
-            img = X[t:t+1,:,:,:]
-            img = crop_to_bounding_box(img, bbox_test[i,0], bbox_test[i,1], bbox_test[i,2]-bbox_test[i,0], bbox_test[i,3]-bbox_test[i,1])
-            img = resize_area(img, (64,64))
-            img = sess.run(img)
-            X[t,:,:,:]=img
-        yield X,y
-    sess.close()
-
-train_datagen = ImageDataGenerator(rescale = 1./255)
-
-test_datagen = ImageDataGenerator(rescale = 1./255)
-
-training_set = train_datagen.flow_from_directory('train/',
+training_set_d = train_datagen_d.flow_from_directory('train/',
                                                  target_size = (64, 64),
                                                  batch_size = 32,
+                                                 shuffle = False,
                                                  class_mode = None)
-
-test_set = test_datagen.flow_from_directory('test/',
+test_set_d = test_datagen_d.flow_from_directory('test/',
                                             target_size = (64, 64),
                                             batch_size = 32,
+                                            shuffle = False,
+                                            class_mode = None)
+
+training_set_c_1 = train_datagen_c_1.flow_from_directory('train_cr/',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 shuffle = False,
+                                                 class_mode = None)
+test_set_c_1 = test_datagen_c_1.flow_from_directory('test_cr/',
+                                            target_size = (64, 64),
+                                            batch_size = 32,
+                                            shuffle = False,
+                                            class_mode = None)
+training_set_c_2 = train_datagen_c_2.flow_from_directory('train_cr/',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 shuffle = False,
+                                                 class_mode = None)
+test_set_c_2 = test_datagen_c_2.flow_from_directory('test_cr/',
+                                            target_size = (64, 64),
+                                            batch_size = 32,
+                                            shuffle = False,
+                                            class_mode = None)
+training_set_c_3 = train_datagen_c_3.flow_from_directory('train_cr/',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 shuffle = False,
+                                                 class_mode = None)
+test_set_c_3 = test_datagen_c_3.flow_from_directory('test_cr/',
+                                            target_size = (64, 64),
+                                            batch_size = 32,
+                                            shuffle = False,
+                                            class_mode = None)
+training_set_c_4 = train_datagen_c_4.flow_from_directory('train_cr/',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 shuffle = False,
+                                                 class_mode = None)
+test_set_c_4 = test_datagen_c_4.flow_from_directory('test_cr/',
+                                            target_size = (64, 64),
+                                            batch_size = 32,
+                                            shuffle = False,
+                                            class_mode = None)
+training_set_c_5 = train_datagen_c_5.flow_from_directory('train_cr/',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 shuffle = False,
+                                                 class_mode = None)
+test_set_c_5 = test_datagen_c_5.flow_from_directory('test_cr/',
+                                            target_size = (64, 64),
+                                            batch_size = 32,
+                                            shuffle = False,
+                                            class_mode = None)
+training_set_c_6 = train_datagen_c_6.flow_from_directory('train_cr/',
+                                                 target_size = (64, 64),
+                                                 batch_size = 32,
+                                                 shuffle = False,
+                                                 class_mode = None)
+test_set_c_6 = test_datagen_c_6.flow_from_directory('test_cr/',
+                                            target_size = (64, 64),
+                                            batch_size = 32,
+                                            shuffle = False,
                                             class_mode = None)
 
 bbox_train_g=bbox_gen(bbox_train)
@@ -144,22 +183,22 @@ label_test_4 = labels_gen(label_test, 4)
 label_test_5 = labels_gen(label_test, 5)
 label_test_6 = labels_gen(label_test, 6)
 
-training_set_d = zip(training_set, bbox_train_g)
-test_set_d = zip(test_set, bbox_test_g)
+training_set_d = zip(training_set_d, bbox_train_g)
+test_set_d = zip(test_set_d, bbox_test_g)
 
-training_set_c_1 = crop_tr(zip(training_set, label_train_1))
-training_set_c_2 = crop_tr(zip(training_set, label_train_2))
-training_set_c_3 = crop_tr(zip(training_set, label_train_3))
-training_set_c_4 = crop_tr(zip(training_set, label_train_4))
-training_set_c_5 = crop_tr(zip(training_set, label_train_5))
-training_set_c_6 = crop_tr(zip(training_set, label_train_6))
+training_set_c_1 = zip(training_set_c_1, label_train_1)
+training_set_c_2 = zip(training_set_c_2, label_train_2)
+training_set_c_3 = zip(training_set_c_3, label_train_3)
+training_set_c_4 = zip(training_set_c_4, label_train_4)
+training_set_c_5 = zip(training_set_c_5, label_train_5)
+training_set_c_6 = zip(training_set_c_6, label_train_6)
 
-test_set_c_1 = crop_te(zip(test_set, label_test_1))
-test_set_c_2 = crop_te(zip(test_set, label_test_2))
-test_set_c_3 = crop_te(zip(test_set, label_test_3))
-test_set_c_4 = crop_te(zip(test_set, label_test_4))
-test_set_c_5 = crop_te(zip(test_set, label_test_5))
-test_set_c_6 = crop_te(zip(test_set, label_test_6))
+test_set_c_1 = zip(test_set_c_1, label_test_1)
+test_set_c_2 = zip(test_set_c_2, label_test_2)
+test_set_c_3 = zip(test_set_c_3, label_test_3)
+test_set_c_4 = zip(test_set_c_4, label_test_4)
+test_set_c_5 = zip(test_set_c_5, label_test_5)
+test_set_c_6 = zip(test_set_c_6, label_test_6)
 
 # PART - 3 : Training
 
@@ -195,19 +234,22 @@ detector.fit_generator(generator=training_set_d,
 # Initialising the CNN for CLASSIFICATION
 
 classifier = Sequential()
-classifier.add(Conv2D(32, (3, 3), input_shape = (64, 64, 3), activation='tanh'))
+classifier.add(Conv2D(48, (3, 3), input_shape = (64, 64, 3), activation='relu'))
 classifier.add(Dropout(0.2))
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
-classifier.add(Conv2D(32, (3, 3), activation='tanh'))
+classifier.add(Conv2D(48, (3, 3), activation='relu'))
 classifier.add(Dropout(0.2))
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
-classifier.add(Conv2D(64, (3, 3), activation='tanh'))
+classifier.add(Conv2D(64, (3, 3), activation='relu'))
+classifier.add(Dropout(0.2))
+classifier.add(MaxPooling2D(pool_size = (2, 2)))
+classifier.add(Conv2D(64, (3, 3), activation='relu'))
 classifier.add(Dropout(0.2))
 classifier.add(MaxPooling2D(pool_size = (2, 2)))
 classifier.add(Flatten())
-classifier.add(Dense(units = 512, activation='tanh'))
+classifier.add(Dense(units = 512, activation='relu'))
 classifier.add(Dropout(0.2))
-classifier.add(Dense(units = 512, activation='tanh'))
+classifier.add(Dense(units = 512, activation='relu'))
 classifier.add(Dropout(0.2))
 classifier.add(Dense(units = 11, activation = 'softmax'))
 
