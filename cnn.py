@@ -387,22 +387,22 @@ classifier_4.compile(optimizer = 'adam', loss = 'categorical_crossentropy', metr
 
 classifier_1.fit_generator(generator=training_set_c_1,
                            steps_per_epoch=33402/32,
-                           epochs=25,
+                           epochs=50,
                            validation_data=test_set_c_1,
                            validation_steps=13068/32)
 classifier_2.fit_generator(generator=training_set_c_2,
                            steps_per_epoch=33402/32,
-                           epochs=25,
+                           epochs=50,
                            validation_data=test_set_c_2,
                            validation_steps=13068/32)
 classifier_3.fit_generator(generator=training_set_c_3,
                            steps_per_epoch=33402/32,
-                           epochs=25,
+                           epochs=50,
                            validation_data=test_set_c_3,
                            validation_steps=13068/32)
 classifier_4.fit_generator(generator=training_set_c_4,
                            steps_per_epoch=33402/32,
-                           epochs=25,
+                           epochs=50,
                            validation_data=test_set_c_4,
                            validation_steps=13068/32)
 
