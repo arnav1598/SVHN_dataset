@@ -403,7 +403,7 @@ classifier_4.fit_generator(generator=training_set_c_4,
 # Loading and preprocessing test image
 
 test_image = Image.open('roomnum.jpg')
-test_image = test_image.resize((64,64))
+test_image = test_image.resize((64,64), Image.ANTIALIAS)
 test_image = np.array(test_image).astype(float)
 test_image = np.expand_dims(test_image, axis = 0)
 test_image /= 255.0
@@ -420,7 +420,7 @@ bbox = bbox.astype(int)
 test_image = np.squeeze(test_image)
 test_image = Image.fromarray(np.uint8(test_image*255))
 test_image = test_image.crop((bbox[0,1],bbox[0,0],bbox[0,3],bbox[0,2]))
-test_image = test_image.resize((32,32))
+test_image = test_image.resize((32,32), Image.ANTIALIAS)
 test_image = np.array(test_image).astype(float)
 test_image = np.expand_dims(test_image, axis = 0)
 test_image /= 255.0
