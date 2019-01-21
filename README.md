@@ -14,3 +14,8 @@ The model includes 4 parts:
 2. Using CNN to do bounding box regression to find the top, left, bottom and right of the bounding box which contains all the digits in a given image.
 3. Use the bounding box from step 1 to extract a part of the image with only digits and use other CNNs to classify the digits of the cut image.
 4. Using the model on a test image and printing the result.
+
+# Applications
+
+1. A high-end use of the model is to use it for marking house/street numbers in google maps.
+2. To evaluate objective mathematics' answer sheets of children studying in primary grades(bounding-box can be already specified).
