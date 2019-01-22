@@ -19,3 +19,4 @@ The model includes 4 parts:
 
 1. A high-end use of the model is to use it for marking house/street numbers in google maps.
 2. To evaluate objective mathematics' answer sheets of children studying in primary grades(bounding-box can be already specified).
+3. To mark students' attendance on digital platforms using attendance sheets.
