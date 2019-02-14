@@ -11,6 +11,7 @@ from keras.layers import Flatten
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import BatchNormalization
+from keras.layers import LeakyReLU
 from PIL import Image
 from keras.preprocessing.image import ImageDataGenerator
 
@@ -109,8 +110,7 @@ label_test = process_labels(label_test)
 datagen = ImageDataGenerator(rescale = 1./255)
 datagen2 = ImageDataGenerator(rescale = 1./255,
                               shear_range = 0.1,
-                              zoom_range = 0.1,
-                              vertical_flip = True)
+                              zoom_range = 0.1)
 
 training_set_d = datagen.flow_from_directory('train/',
                                              target_size = (64, 64),
@@ -124,62 +124,62 @@ test_set_d = datagen.flow_from_directory('test/',
                                          class_mode = None)
 
 training_set_c_1 = datagen2.flow_from_directory('train_cr/',
-                                             target_size = (32, 32),
+                                             target_size = (64, 64),
                                              batch_size = 32,
                                              shuffle = False,
                                              class_mode = None)
 test_set_c_1 = datagen2.flow_from_directory('test_cr/',
-                                         target_size = (32, 32),
+                                         target_size = (64, 64),
                                          batch_size = 32,
                                          shuffle = False,
                                          class_mode = None)
 training_set_c_2 = datagen2.flow_from_directory('train_cr/',
-                                             target_size = (32, 32),
+                                             target_size = (64, 64),
                                              batch_size = 32,
                                              shuffle = False,
                                              class_mode = None)
 test_set_c_2 = datagen2.flow_from_directory('test_cr/',
-                                         target_size = (32, 32),
+                                         target_size = (64, 64),
                                          batch_size = 32,
                                          shuffle = False,
                                          class_mode = None)
 training_set_c_3 = datagen2.flow_from_directory('train_cr/',
-                                             target_size = (32, 32),
+                                             target_size = (64, 64),
                                              batch_size = 32,
                                              shuffle = False,
                                              class_mode = None)
 test_set_c_3 = datagen2.flow_from_directory('test_cr/',
-                                         target_size = (32, 32),
+                                         target_size = (64, 64),
                                          batch_size = 32,
                                          shuffle = False,
                                          class_mode = None)
 training_set_c_4 = datagen2.flow_from_directory('train_cr/',
-                                             target_size = (32, 32),
+                                             target_size = (64, 64),
                                              batch_size = 32,
                                              shuffle = False,
                                              class_mode = None)
 test_set_c_4 = datagen2.flow_from_directory('test_cr/',
-                                         target_size = (32, 32),
+                                         target_size = (64, 64),
                                          batch_size = 32,
                                          shuffle = False,
                                          class_mode = None)
 training_set_c_5 = datagen2.flow_from_directory('train_cr/',
-                                             target_size = (32, 32),
+                                             target_size = (64, 64),
                                              batch_size = 32,
                                              shuffle = False,
                                              class_mode = None)
 test_set_c_5 = datagen2.flow_from_directory('test_cr/',
-                                         target_size = (32, 32),
+                                         target_size = (64, 64),
                                          batch_size = 32,
                                          shuffle = False,
                                          class_mode = None)
 training_set_c_6 = datagen2.flow_from_directory('train_cr/',
-                                             target_size = (32, 32),
+                                             target_size = (64, 64),
                                              batch_size = 32,
                                              shuffle = False,
                                              class_mode = None)
 test_set_c_6 = datagen2.flow_from_directory('test_cr/',
-                                         target_size = (32, 32),
+                                         target_size = (64, 64),
                                          batch_size = 32,
                                          shuffle = False,
                                          class_mode = None)
@@ -241,13 +241,16 @@ detector.add(Conv2D(64, (3, 3), activation='relu'))
 detector.add(BatchNormalization())
 detector.add(Dropout(0.2))
 detector.add(MaxPooling2D(pool_size = (2, 2)))
-detector.add(Flatten())
-detector.add(Dense(units = 1024, activation='relu'))
+detector.add(Conv2D(128, (3, 3),  activation='relu'))
+detector.add(BatchNormalization())
+detector.add(Conv2D(128, (3, 3), activation='relu'))
 detector.add(BatchNormalization())
 detector.add(Dropout(0.2))
-detector.add(Dense(units = 512, activation='relu'))
+detector.add(MaxPooling2D(pool_size = (2, 2)))
+detector.add(Flatten())
+detector.add(Dense(units = 400, activation='relu'))
 detector.add(BatchNormalization())
-detector.add(Dropout(0.1))
+detector.add(Dropout(0.2))
 detector.add(Dense(units = 4))
 
 # Compiling the CNN
@@ -264,109 +267,44 @@ detector.fit_generator(generator=training_set_d,
 
 # Initialising the CNN for CLASSIFICATION
 
-classifier_1 = Sequential()
-classifier_1.add(Conv2D(16, (3, 3), input_shape = (32, 32, 3), activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Conv2D(32, (3, 3), activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Dropout(0.1))
-classifier_1.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_1.add(Conv2D(48, (3, 3), activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Conv2D(64, (3, 3), activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Dropout(0.2))
-classifier_1.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_1.add(Conv2D(96, (3, 3), activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Dropout(0.2))
-classifier_1.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_1.add(Flatten())
-classifier_1.add(Dense(units = 1024, activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Dropout(0.1))
-classifier_1.add(Dense(units = 512, activation='relu'))
-classifier_1.add(BatchNormalization())
-classifier_1.add(Dropout(0.1))
-classifier_1.add(Dense(units = 11, activation = 'softmax'))
+def cmodel():
+    classifier = Sequential()
+    classifier.add(Conv2D(32, (3, 3), input_shape = (64, 64, 3)))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Conv2D(32, (3, 3)))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Dropout(0.1))
+    classifier.add(MaxPooling2D(pool_size = (2, 2)))
+    classifier.add(Conv2D(64, (3, 3)))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Conv2D(64, (3, 3)))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Dropout(0.2))
+    classifier.add(MaxPooling2D(pool_size = (2, 2)))
+    classifier.add(Conv2D(128, (3, 3)))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Conv2D(128, (3, 3)))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Dropout(0.2))
+    classifier.add(MaxPooling2D(pool_size = (2, 2)))
+    classifier.add(Flatten())
+    classifier.add(Dense(units = 450))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(Dropout(0.2))
+    classifier.add(Dense(units = 11, activation = 'softmax'))
+    return classifier
 
-classifier_2 = Sequential()
-classifier_2.add(Conv2D(16, (3, 3), input_shape = (32, 32, 3), activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Conv2D(32, (3, 3), activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Dropout(0.1))
-classifier_2.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_2.add(Conv2D(48, (3, 3), activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Conv2D(64, (3, 3), activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Dropout(0.2))
-classifier_2.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_2.add(Conv2D(96, (3, 3), activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Dropout(0.2))
-classifier_2.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_2.add(Flatten())
-classifier_2.add(Dense(units = 1024, activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Dropout(0.1))
-classifier_2.add(Dense(units = 512, activation='relu'))
-classifier_2.add(BatchNormalization())
-classifier_2.add(Dropout(0.1))
-classifier_2.add(Dense(units = 11, activation = 'softmax'))
-
-classifier_3 = Sequential()
-classifier_3.add(Conv2D(16, (3, 3), input_shape = (32, 32, 3), activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Conv2D(32, (3, 3), activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Dropout(0.1))
-classifier_3.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_3.add(Conv2D(48, (3, 3), activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Conv2D(64, (3, 3), activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Dropout(0.2))
-classifier_3.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_3.add(Conv2D(96, (3, 3), activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Dropout(0.2))
-classifier_3.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_3.add(Flatten())
-classifier_3.add(Dense(units = 1024, activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Dropout(0.1))
-classifier_3.add(Dense(units = 512, activation='relu'))
-classifier_3.add(BatchNormalization())
-classifier_3.add(Dropout(0.1))
-classifier_3.add(Dense(units = 11, activation = 'softmax'))
-
-classifier_4 = Sequential()
-classifier_4.add(Conv2D(16, (3, 3), input_shape = (32, 32, 3), activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Conv2D(32, (3, 3), activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Dropout(0.1))
-classifier_4.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_4.add(Conv2D(48, (3, 3), activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Conv2D(64, (3, 3), activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Dropout(0.2))
-classifier_4.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_4.add(Conv2D(96, (3, 3), activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Dropout(0.2))
-classifier_4.add(MaxPooling2D(pool_size = (2, 2)))
-classifier_4.add(Flatten())
-classifier_4.add(Dense(units = 1024, activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Dropout(0.1))
-classifier_4.add(Dense(units = 512, activation='relu'))
-classifier_4.add(BatchNormalization())
-classifier_4.add(Dropout(0.1))
-classifier_4.add(Dense(units = 11, activation = 'softmax'))
+classifier_1=cmodel()
+classifier_2=cmodel()
+classifier_3=cmodel()
+classifier_4=cmodel()
 
 # Compiling the CNN
 
@@ -402,8 +340,8 @@ classifier_4.fit_generator(generator=training_set_c_4,
 
 # Loading and preprocessing test image
 
-test_image = Image.open('roomnum.jpg')
-test_image = test_image.resize((64,64), Image.ANTIALIAS)
+test_image = Image.open('temp.png')
+test_image = test_image.resize((64,64))
 test_image = np.array(test_image).astype(float)
 test_image = np.expand_dims(test_image, axis = 0)
 test_image /= 255.0
@@ -420,7 +358,7 @@ bbox = bbox.astype(int)
 test_image = np.squeeze(test_image)
 test_image = Image.fromarray(np.uint8(test_image*255))
 test_image = test_image.crop((bbox[0,1],bbox[0,0],bbox[0,3],bbox[0,2]))
-test_image = test_image.resize((32,32), Image.ANTIALIAS)
+test_image = test_image.resize((64,64))
 test_image = np.array(test_image).astype(float)
 test_image = np.expand_dims(test_image, axis = 0)
 test_image /= 255.0
