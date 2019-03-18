@@ -231,25 +231,24 @@ test_set_c_6 = zip(test_set_c_6, label_test_6)
 detector = Sequential()
 detector.add(Conv2D(32, (3, 3), input_shape = (64, 64, 3), activation='relu'))
 detector.add(BatchNormalization())
-detector.add(Conv2D(32, (3, 3), activation='relu'))
+detector.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+detector.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
 detector.add(BatchNormalization())
-detector.add(Dropout(0.1))
-detector.add(MaxPooling2D(pool_size = (2, 2)))
-detector.add(Conv2D(64, (3, 3), activation='relu'))
+detector.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+detector.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
 detector.add(BatchNormalization())
-detector.add(Conv2D(64, (3, 3), activation='relu'))
+detector.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+detector.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
 detector.add(BatchNormalization())
-detector.add(Dropout(0.2))
-detector.add(MaxPooling2D(pool_size = (2, 2)))
-detector.add(Conv2D(128, (3, 3),  activation='relu'))
+detector.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+detector.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
 detector.add(BatchNormalization())
-detector.add(Conv2D(128, (3, 3), activation='relu'))
+detector.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+detector.add(Conv2D(128, (3, 3), activation='relu', padding='same'))
 detector.add(BatchNormalization())
-detector.add(Dropout(0.2))
-detector.add(MaxPooling2D(pool_size = (2, 2)))
+detector.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
 detector.add(Flatten())
-detector.add(Dense(units = 400, activation='relu'))
-detector.add(BatchNormalization())
+detector.add(Dense(units = 32, activation='relu'))
 detector.add(Dropout(0.2))
 detector.add(Dense(units = 4))
 
@@ -263,7 +262,8 @@ detector.fit_generator(generator=training_set_d,
                        steps_per_epoch=33402/32,
                        epochs=50,
                        validation_data=test_set_d,
-                       validation_steps=13068/32)
+                       validation_steps=13068/32,
+                       shuffle=True)
 
 # Initialising the CNN for CLASSIFICATION
 
@@ -272,31 +272,38 @@ def cmodel():
     classifier.add(Conv2D(32, (3, 3), input_shape = (64, 64, 3)))
     classifier.add(LeakyReLU(0.1))
     classifier.add(BatchNormalization())
-    classifier.add(Conv2D(32, (3, 3)))
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(32, (3, 3), padding='same'))
     classifier.add(LeakyReLU(0.1))
     classifier.add(BatchNormalization())
-    classifier.add(Dropout(0.1))
-    classifier.add(MaxPooling2D(pool_size = (2, 2)))
-    classifier.add(Conv2D(64, (3, 3)))
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(64, (3, 3), padding='same'))
     classifier.add(LeakyReLU(0.1))
     classifier.add(BatchNormalization())
-    classifier.add(Conv2D(64, (3, 3)))
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(64, (3, 3), padding='same'))
     classifier.add(LeakyReLU(0.1))
     classifier.add(BatchNormalization())
-    classifier.add(Dropout(0.2))
-    classifier.add(MaxPooling2D(pool_size = (2, 2)))
-    classifier.add(Conv2D(128, (3, 3)))
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(128, (3, 3), padding='same'))
     classifier.add(LeakyReLU(0.1))
     classifier.add(BatchNormalization())
-    classifier.add(Conv2D(128, (3, 3)))
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(128, (3, 3), padding='same'))
     classifier.add(LeakyReLU(0.1))
     classifier.add(BatchNormalization())
-    classifier.add(Dropout(0.2))
-    classifier.add(MaxPooling2D(pool_size = (2, 2)))
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(192, (3, 3), padding='same'))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
+    classifier.add(Conv2D(192, (3, 3), padding='same'))
+    classifier.add(LeakyReLU(0.1))
+    classifier.add(BatchNormalization())
+    classifier.add(MaxPooling2D(pool_size = (2, 2), padding='same'))
     classifier.add(Flatten())
-    classifier.add(Dense(units = 450))
+    classifier.add(Dense(units = 32))
     classifier.add(LeakyReLU(0.1))
-    classifier.add(BatchNormalization())
     classifier.add(Dropout(0.2))
     classifier.add(Dense(units = 11, activation = 'softmax'))
     return classifier
@@ -319,22 +326,26 @@ classifier_1.fit_generator(generator=training_set_c_1,
                            steps_per_epoch=33402/32,
                            epochs=50,
                            validation_data=test_set_c_1,
-                           validation_steps=13068/32)
+                           validation_steps=13068/32,
+                           shuffle=True)
 classifier_2.fit_generator(generator=training_set_c_2,
                            steps_per_epoch=33402/32,
                            epochs=50,
                            validation_data=test_set_c_2,
-                           validation_steps=13068/32)
+                           validation_steps=13068/32,
+                           shuffle=True)
 classifier_3.fit_generator(generator=training_set_c_3,
                            steps_per_epoch=33402/32,
                            epochs=50,
                            validation_data=test_set_c_3,
-                           validation_steps=13068/32)
+                           validation_steps=13068/32,
+                           shuffle=True)
 classifier_4.fit_generator(generator=training_set_c_4,
                            steps_per_epoch=33402/32,
-                           epochs=50,
+                           epochs=30,
                            validation_data=test_set_c_4,
-                           validation_steps=13068/32)
+                           validation_steps=13068/32,
+                           shuffle=True)
 
 # PART - 4 : Testing on a single image
 
