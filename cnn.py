@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.image as mpimg
 import os
+from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Conv2D
 from keras.layers import MaxPooling2D
@@ -348,6 +349,12 @@ classifier_4.fit_generator(generator=training_set_c_4,
                            shuffle=True)
 
 # PART - 4 : Testing on a single image
+
+#detector = load_model("detector.h5")
+#classifier_1 = load_model("classifier_1.h5")
+#classifier_2 = load_model("classifier_2.h5")
+#classifier_3 = load_model("classifier_3.h5")
+#classifier_4 = load_model("classifier_4.h5")
 
 # Loading and preprocessing test image
 
